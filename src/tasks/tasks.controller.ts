@@ -24,14 +24,7 @@ constructor(private tasksService: TasksService){
 
     @Get(':id')
     getTaskById(@Param('id') id: string): Task{
-        const found =  this.tasksService.getTaskById(id);
-
-        if(!found){
-            throw new NotFoundException(`Task with ID ${id} not Found`);
-        }
-        else{
-            return found;
-        }
+        return this.tasksService.getTaskById(id);
     }
 
     @Post()
