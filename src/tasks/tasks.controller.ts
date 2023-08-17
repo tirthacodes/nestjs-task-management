@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Body, Param, Delete, Patch, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body, Param, Delete, Patch, UsePipes, ValidationPipe, NotFoundException } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Task, TaskStatus } from './task.model';
 import { CreateTaskDto } from './dtos/CreateTask.dto';
@@ -24,7 +24,14 @@ constructor(private tasksService: TasksService){
 
     @Get(':id')
     getTaskById(@Param('id') id: string): Task{
-        return this.tasksService.getTaskById(id);
+        const found =  this.tasksService.getTaskById(id);
+
+        if(!found){
+            throw new NotFoundException(`Task with ID ${id} not Found`);
+        }
+        else{
+            return found;
+        }
     }
 
     @Post()
