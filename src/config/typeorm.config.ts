@@ -1,5 +1,6 @@
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { join } from "path";
+import { Task } from "src/tasks/entity/task.entity";
 
 export const typeOrmConfig : TypeOrmModule = {
     type: 'mysql',
@@ -8,6 +9,6 @@ export const typeOrmConfig : TypeOrmModule = {
     username: 'testuser',
     password: 'testuser123',
     database: 'taskmanagement',
-    entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+    entities: [Task],
     synchronize: true,
 }

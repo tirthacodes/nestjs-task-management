@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Query, Body, Param, Delete, Patch, UsePipes, ValidationPipe, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body, Param, Delete, Patch, UsePipes, ValidationPipe, NotFoundException, ParseIntPipe } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dtos/CreateTask.dto';
 import { GetTaskFilterDto } from './dtos/GetTaskFilter.dto';
+import { Task } from './entity/task.entity';
 
 
 @Controller('tasks')
@@ -21,10 +22,10 @@ constructor(private tasksService: TasksService){
     //     }
     // }
 
-    // @Get(':id')
-    // getTaskById(@Param('id') id: string): Task{
-    //     return this.tasksService.getTaskById(id);
-    // }
+    @Get(':id')
+    getTaskById(@Param('id', ParseIntPipe) id: number): Promise<Task>{
+        return this.tasksService.getTaskById(id);
+    }
 
     // @Post()
     // @UsePipes(ValidationPipe)
