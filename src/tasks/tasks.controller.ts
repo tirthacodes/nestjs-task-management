@@ -3,6 +3,7 @@ import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dtos/CreateTask.dto';
 import { GetTaskFilterDto } from './dtos/GetTaskFilter.dto';
 import { Task } from './entity/task.entity';
+import { TaskStatus } from './task.status.enum';
 
 
 @Controller('tasks')
@@ -38,10 +39,10 @@ constructor(private tasksService: TasksService){
         return this.tasksService.deleteTask(id);
     }
 
-    // @Patch(':id/status')
-    // updateTaskStatus(@Param('id') id: string, @Body('status') status: TaskStatus){
-    //     return this.tasksService.updateTaskStatus(id, status);
-    // }
+    @Patch(':id/status')
+    updateTaskStatus(@Param('id', ParseIntPipe) id: number, @Body('status',) status: TaskStatus) : Promise<Task>{
+        return this.tasksService.updateTaskStatus(id, status);
+    }
 
     
 
