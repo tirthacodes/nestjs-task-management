@@ -5,6 +5,8 @@ import { AuthDto } from './dtos/auth-dto';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { ConflictException, InternalServerErrorException } from '@nestjs/common/exceptions';
+import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class AuthService {
 
@@ -25,24 +27,24 @@ export class AuthService {
     async signUp(authDto: AuthDto): Promise<void> {
         const {username, password } = authDto;
 
-        const exists = this.repo.findOne({
-            where: {
-                username: username
-            }
-        });
+        // const exists = this.repo.findOne({
+        //     where: {
+        //         username: username
+        //     }
+        // });
 
-        if(exists){
-            //throw some error
-        }
+        // if(exists){
+        //     throw some error
+        // }
 
         const user = new User();
         user.username = username;
-        user.password = password;
+        user.salt = await bcrypt.genSalt();
+        user.password = await this.hashPassword(password, user.salt);
 
         try{
-            await user.save();
+           await user.save();
         }catch(error){
-            //console.log(error.code);
             if(error.code === 'ER_DUP_ENTRY'){ //duplicate username
                 throw new ConflictException('Username already exist');
             }
@@ -52,6 +54,10 @@ export class AuthService {
            
         }
 
+    }
+
+    private async hashPassword(password: string, salt: string){
+        return bcrypt.hash(password, salt);
     }
 
 }
