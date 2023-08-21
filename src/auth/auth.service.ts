@@ -4,8 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthDto } from './dtos/auth-dto';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
-import { existsSync } from 'fs';
-
+import { ConflictException, InternalServerErrorException } from '@nestjs/common/exceptions';
 @Injectable()
 export class AuthService {
 
@@ -40,7 +39,19 @@ export class AuthService {
         user.username = username;
         user.password = password;
 
-        await user.save();
+        try{
+            await user.save();
+        }catch(error){
+            //console.log(error.code);
+            if(error.code === 'ER_DUP_ENTRY'){ //duplicate username
+                throw new ConflictException('Username already exist');
+            }
+            else{
+                throw new InternalServerErrorException();
+            }
+           
+        }
+
     }
 
 }
