@@ -7,6 +7,7 @@ import { Task } from './entity/task.entity';
 import { Repository } from 'typeorm';
 import { TaskStatus } from './task.status.enum';
 import { User } from 'src/auth/entity/user.entity';
+import { filter } from 'rxjs';
 
 
 @Injectable()
@@ -23,7 +24,21 @@ export class TasksService {
         filterDto: GetTaskFilterDto,
         user: User,
         ) : Promise<Task[]>{
-        return this.taskRepository.find();     
+            const {status, search } = filterDto;
+            const query = this.taskRepository.createQueryBuilder('task');
+
+            query.where('task.userId = :userId', {userId: user.id});
+
+            if(status){
+                query.andWhere('task.status =  :status', {status});
+            }
+
+            if(search){
+                query.andWhere('task.title LIKE :search OR task.description LIKE :search', {search: `%${search}`});
+            }
+
+            const tasks = await query.getMany();
+            return tasks;
     }
 
 
