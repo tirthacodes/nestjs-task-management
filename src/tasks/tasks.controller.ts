@@ -5,6 +5,8 @@ import { CreateTaskDto } from './dtos/CreateTask.dto';
 import { GetTaskFilterDto } from './dtos/GetTaskFilter.dto';
 import { Task } from './entity/task.entity';
 import { TaskStatus } from './task.status.enum';
+import { User } from 'src/auth/entity/user.entity';
+import { GetUser } from 'src/auth/get-user.decorator';
 
 
 @Controller('tasks')
@@ -26,8 +28,11 @@ constructor(private tasksService: TasksService){
 
     @Post()
     @UsePipes(ValidationPipe)
-    createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task>{
-        return this.tasksService.createTask(createTaskDto);
+    createTask(
+        @Body() createTaskDto: CreateTaskDto,
+        @GetUser() user: User,
+    ): Promise<Task>{
+        return this.tasksService.createTask(createTaskDto, user);
     }
 
     @Delete(':id')

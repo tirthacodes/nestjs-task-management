@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './entity/task.entity';
 import { Repository } from 'typeorm';
 import { TaskStatus } from './task.status.enum';
+import { User } from 'src/auth/entity/user.entity';
 
 
 @Injectable()
@@ -33,14 +34,20 @@ async getTaskById(id: number): Promise<Task> {
     return found;
 }
 
-async createTask(createTaskDto: CreateTaskDto) : Promise<Task> {
+async createTask(
+    createTaskDto: CreateTaskDto,
+    user: User,
+    ) : Promise<Task> {
     const {title, description} = createTaskDto;
 
     const task = new Task();
     task.title = title;
     task.description = description;
     task.status = TaskStatus.OPEN;
+    task.user = user;
+
     await task.save();
+    // delete task.user();
 
     return task;
 }
