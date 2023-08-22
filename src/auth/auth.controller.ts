@@ -21,10 +21,10 @@ export class AuthController {
         return this.authService.signIn(authDto);
     }
 
-    @Post('/test')
-    @UseGuards(AuthGuard())
-    test(@GetUser() user: User){
-        console.log(user);
-    }
+    // @Post('/test')
+    // @UseGuards(AuthGuard())
+    // test(@GetUser() user: User){
+    //     console.log(user);
+    // }
 
 }
