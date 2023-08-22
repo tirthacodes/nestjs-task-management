@@ -17,8 +17,11 @@ constructor(private tasksService: TasksService){
 }
 
     @Get()
-    getTasks(@Query(ValidationPipe) filterDto: GetTaskFilterDto) : Promise<Task[]> {
-        return this.tasksService.getTasks(filterDto);
+    getTasks(
+        @Query(ValidationPipe) filterDto: GetTaskFilterDto,
+        @GetUser() user: User,
+        ) : Promise<Task[]> {
+        return this.tasksService.getTasks(filterDto, user);
     }
 
     @Get(':id')
