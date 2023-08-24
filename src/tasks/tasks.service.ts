@@ -24,26 +24,29 @@ export class TasksService {
         filterDto: GetTaskFilterDto,
         user: User,
         ) : Promise<Task[]>{
-            const {status, search } = filterDto;
-            const query = this.taskRepository.createQueryBuilder('task');
+            // const {status, search } = filterDto;
+            // const query = this.taskRepository.createQueryBuilder('task');
 
-            query.where('task.userId = :userId', {userId: user.id});
+            // query.where('task.userId = :userId', {userId: user.id});
 
-            if(status){
-                query.andWhere('task.status =  :status', {status});
-            }
+            // if(status){
+            //     query.andWhere('task.status =  :status', {status});
+            // }
 
-            if(search){
-                query.andWhere('task.title LIKE :search OR task.description LIKE :search', {search: `%${search}`});
-            }
+            // if(search){
+            //     query.andWhere('task.title LIKE :search OR task.description LIKE :search', {search: `%${search}`});
+            // }
 
-            const tasks = await query.getMany();
-            return tasks;
+            // const tasks = await query.getMany();
+            // return tasks;
+
+            return this.taskRepository.find({ relations: ['user' ]});
     }
 
 
-async getTaskById(id: number): Promise<Task> {
-    const found = await this.taskRepository.findOne({ where: { id } });
+async getTaskById(id: number,
+    ): Promise<Task> {
+    const found = await this.taskRepository.findOne({ where: {id} });
 
     if(!found){
         throw new NotFoundException(`Task with ID ${id} not Found`);
@@ -56,6 +59,8 @@ async createTask(
     createTaskDto: CreateTaskDto,
     user: User,
     ) : Promise<Task> {
+        console.log('Authenticated User:', user);
+
     const {title, description} = createTaskDto;
 
     const task = new Task();
@@ -63,6 +68,8 @@ async createTask(
     task.description = description;
     task.status = TaskStatus.OPEN;
     task.user = user;
+
+    console.log('User assigned to task:', task.user); //to test
 
     await task.save();
     // delete task.user();

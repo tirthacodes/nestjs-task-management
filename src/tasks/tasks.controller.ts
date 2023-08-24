@@ -25,7 +25,8 @@ constructor(private tasksService: TasksService){
     }
 
     @Get(':id')
-    getTaskById(@Param('id', ParseIntPipe) id: number): Promise<Task>{
+    getTaskById(@Param('id', ParseIntPipe) id: number,
+    ): Promise<Task>{
         return this.tasksService.getTaskById(id);
     }
 
@@ -35,6 +36,7 @@ constructor(private tasksService: TasksService){
         @Body() createTaskDto: CreateTaskDto,
         @GetUser() user: User,
     ): Promise<Task>{
+        console.log('User from GetUser decorator:', user);
         return this.tasksService.createTask(createTaskDto, user);
     }
 

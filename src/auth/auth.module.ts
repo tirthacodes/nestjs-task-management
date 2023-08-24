@@ -6,6 +6,7 @@ import { User } from './entity/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt-strategy/jwt-strategy';
+import { Task } from 'src/tasks/entity/task.entity';
 
 @Module({
   imports: [
@@ -18,12 +19,12 @@ import { JwtStrategy } from './jwt-strategy/jwt-strategy';
         expiresIn: '1h'
       },
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Task]),
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
-    JwtStrategy
+    JwtStrategy,
   ],
   exports: [
     JwtStrategy,
